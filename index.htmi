@@ -1,74 +1,86 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tag</title>
 
-    <link rel="stylesheet" href="style.css">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Tag</title>
+
+<link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
-    <h1>Tag</h1>
-    <p>鬼ごっこシステム</p>
+<div class="container">
 
-    <div class="container">
+<h1>Tag</h1>
 
-        <label>ニックネーム</label>
-        <input
-            type="text"
-            id="nickname"
-            placeholder="ニックネームを入力">
+<p class="subtitle">
+鬼ごっこシステム
+</p>
 
-        <br><br>
+<label>ニックネーム</label>
 
-        <label>位置更新間隔</label>
+<input
+id="nickname"
+type="text"
+placeholder="ニックネーム">
 
-        <select id="interval">
+<label>位置更新間隔</label>
 
-            <option value="10">10分</option>
-            <option value="20">20分</option>
-            <option value="30" selected>30分</option>
-            <option value="40">40分</option>
-            <option value="50">50分</option>
-            <option value="60">60分</option>
-            <option value="90">90分</option>
-            <option value="120">120分</option>
-            <option value="150">150分</option>
-            <option value="180">180分</option>
+<select id="interval">
 
-        </select>
+<option value="10">10分</option>
+<option value="20">20分</option>
+<option value="30">30分</option>
+<option value="40">40分</option>
+<option value="50">50分</option>
+<option value="60" selected>60分</option>
+<option value="90">90分</option>
+<option value="120">120分</option>
+<option value="150">150分</option>
+<option value="180">180分</option>
 
-        <br><br>
+</select>
 
-        <button id="createRoom">
-            🎲 ルームを作成
-        </button>
+<label>ルームコード</label>
 
-        <br><br>
+<input
+id="roomCode"
+type="text"
+maxlength="6"
+placeholder="6文字">
 
-        <input
-            type="text"
-            id="roomCode"
-            maxlength="6"
-            placeholder="ルームコード">
+<div class="buttons">
 
-        <br><br>
+<button id="createRoom">
+🏠 ルームを作る
+</button>
 
-        <button id="joinRoom">
-            🚪 ルームに参加
-        </button>
+<button id="joinRoom">
+🚪 ルームに参加
+</button>
 
-        <br><br>
+<button id="startGPS">
+📍 GPS開始
+</button>
 
-        <button onclick="startTracking()">
-            📍 GPS開始
-        </button>
+</div>
 
-    </div>
+<div id="status">
 
-    <script src="script.js"></script>
+待機中...
+
+</div>
+
+</div>
+
+<script type="module" src="firebase.js"></script>
+<script type="module" src="script.js"></script>
 
 </body>
+
 </html>
