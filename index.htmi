@@ -1,1 +1,74 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tag</title>
 
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <h1>Tag</h1>
+    <p>鬼ごっこシステム</p>
+
+    <div class="container">
+
+        <label>ニックネーム</label>
+        <input
+            type="text"
+            id="nickname"
+            placeholder="ニックネームを入力">
+
+        <br><br>
+
+        <label>位置更新間隔</label>
+
+        <select id="interval">
+
+            <option value="10">10分</option>
+            <option value="20">20分</option>
+            <option value="30" selected>30分</option>
+            <option value="40">40分</option>
+            <option value="50">50分</option>
+            <option value="60">60分</option>
+            <option value="90">90分</option>
+            <option value="120">120分</option>
+            <option value="150">150分</option>
+            <option value="180">180分</option>
+
+        </select>
+
+        <br><br>
+
+        <button id="createRoom">
+            🎲 ルームを作成
+        </button>
+
+        <br><br>
+
+        <input
+            type="text"
+            id="roomCode"
+            maxlength="6"
+            placeholder="ルームコード">
+
+        <br><br>
+
+        <button id="joinRoom">
+            🚪 ルームに参加
+        </button>
+
+        <br><br>
+
+        <button onclick="startTracking()">
+            📍 GPS開始
+        </button>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
