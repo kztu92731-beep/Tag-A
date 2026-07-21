@@ -1,33 +1,39 @@
-// ===============================
-// Tag v2.0
-// ===============================
+// =====================================
+// Tag v3.0
+// script.js
+// =====================================
 
+import {
+    createRoom,
+    joinRoom,
+    updateLocation
+} from "./firebase.js";
+
+// -----------------------------
 // 要素取得
+// -----------------------------
+
 const nickname = document.getElementById("nickname");
 const interval = document.getElementById("interval");
 const roomCode = document.getElementById("roomCode");
 
 const createBtn = document.getElementById("createRoom");
 const joinBtn = document.getElementById("joinRoom");
+const gpsBtn = document.getElementById("startGPS");
 
-// -------------------------------
-// 前回の設定を読み込み
-// -------------------------------
-window.onload = () => {
+const status = document.getElementById("status");
 
-    if (localStorage.getItem("nickname")) {
-        nickname.value = localStorage.getItem("nickname");
-    }
+// -----------------------------
+// 前回データ読込
+// -----------------------------
 
-    if (localStorage.getItem("interval")) {
-        interval.value = localStorage.getItem("interval");
-    }
+nickname.value = localStorage.getItem("nickname") || "";
+interval.value = localStorage.getItem("interval") || "60";
 
-};
-
-// -------------------------------
+// -----------------------------
 // 保存
-// -------------------------------
+// -----------------------------
+
 nickname.addEventListener("input", () => {
 
     localStorage.setItem("nickname", nickname.value);
@@ -40,126 +46,121 @@ interval.addEventListener("change", () => {
 
 });
 
-// -------------------------------
-// ランダム6文字ルームコード生成
-// -------------------------------
-function generateRoomCode(length = 6) {
-
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
-    let result = "";
-
-    for (let i = 0; i < length; i++) {
-
-        result += chars.charAt(
-            Math.floor(Math.random() * chars.length)
-        );
-
-    }
-
-    return result;
-
-}
-
-// -------------------------------
+// -----------------------------
 // ルーム作成
-// -------------------------------
-createBtn.addEventListener("click", () => {
+// -----------------------------
 
-    if (nickname.value.trim() === "") {
+createBtn.onclick = async () => {
 
-        alert("ニックネームを入力してください。");
+    if(nickname.value.trim() === ""){
+
+        alert("ニックネームを入力してください");
+
         return;
 
     }
 
-    const code = generateRoomCode();
+    const code = await createRoom(
 
-    alert(
-        "ルームを作成しました！\n\n" +
-        "ルームコード：" + code
+        nickname.value,
+        Number(interval.value)
+
     );
 
-    console.log("Create Room:", code);
+    roomCode.value = code;
 
-});
+    status.textContent =
+        "ルームを作成しました！\nコード：" + code;
 
-// -------------------------------
+};
+
+// -----------------------------
 // ルーム参加
-// -------------------------------
-joinBtn.addEventListener("click", () => {
+// -----------------------------
 
-    if (nickname.value.trim() === "") {
+joinBtn.onclick = async () => {
 
-        alert("ニックネームを入力してください。");
+    if(nickname.value.trim() === ""){
+
+        alert("ニックネームを入力してください");
+
         return;
 
     }
 
-    if (roomCode.value.trim().length !== 6) {
+    if(roomCode.value.length !== 6){
 
-        alert("6文字のルームコードを入力してください。");
+        alert("ルームコードは6文字です");
+
         return;
 
     }
 
-    alert(
-        "ルームに参加しました！\n\n" +
-        roomCode.value.toUpperCase()
+    await joinRoom(
+
+        roomCode.value.toUpperCase(),
+        nickname.value
+
     );
 
-    console.log("Join Room:", roomCode.value);
+    status.textContent =
+        "ルームへ参加しました";
 
-});
+};
 
-// -------------------------------
-// GPS取得
-// -------------------------------
-function getLocation() {
+// -----------------------------
+// GPS開始
+// -----------------------------
 
-    if (!navigator.geolocation) {
+gpsBtn.onclick = () => {
 
-        alert("この端末ではGPSが利用できません。");
+    if(!navigator.geolocation){
+
+        alert("GPS非対応端末です");
+
         return;
 
     }
 
-    navigator.geolocation.getCurrentPosition(
+    status.textContent =
+        "GPS取得中...";
 
-        (position) => {
+    navigator.geolocation.watchPosition(
 
-            console.log("緯度:", position.coords.latitude);
-            console.log("経度:", position.coords.longitude);
+        async(position)=>{
+
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+
+            status.textContent =
+                "位置情報更新中";
+
+            await updateLocation(
+
+                roomCode.value.toUpperCase(),
+
+                nickname.value,
+
+                lat,
+
+                lng
+
+            );
 
         },
 
-        (error) => {
+        ()=>{
 
-            alert("位置情報を取得できませんでした。");
+            alert("位置情報を取得できません");
 
-            console.log(error);
+        },
+
+        {
+
+            enableHighAccuracy:true
 
         }
 
     );
 
-}
-
-// -------------------------------
-// GPS開始
-// -------------------------------
-function startTracking() {
-
-    getLocation();
-
-    const minutes = Number(interval.value);
-
-    alert(minutes + "分ごとに位置情報を更新します。");
-
-    setInterval(() => {
-
-        getLocation();
-
-    }, minutes * 60 * 1000);
-
-}
+};
